@@ -1,0 +1,16 @@
+(ns cambio-360.core
+    (:require [cljsjs.three]))
+
+(enable-console-print!)
+
+;; define your app data so that it doesn't get over-written on reload
+(defonce app-state (atom {:text "Hello world!"}))
+
+
+
+
+(defn main []
+  (.log js/console "360 Video/VR Demo!"))
+
+(defn on-js-reload [] main)
+;; (set! (.-onload js/window) main)
