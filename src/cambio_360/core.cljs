@@ -32,7 +32,7 @@
 
 (defn set-renderer []
   (.setSize renderer js/window.innerWidth js/window.innerHeight)
-  (.appendChild document.body (.-domElement renderer)))
+  (.appendChild js/document.body (.-domElement renderer)))
 
 (defn set-render-type [type]
   (reset! app-state {:render-type type}))
