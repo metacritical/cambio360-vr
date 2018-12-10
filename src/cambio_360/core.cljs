@@ -9,6 +9,8 @@
 
 (defonce app-state (atom {:render-type nil}))
 
+(declare resize)
+
 (def scene (js/THREE.Scene.))
 (def camera (js/THREE.PerspectiveCamera. 
              75 (/ (.-innerWidth js/window) (.-innerHeight js/window)) 1 1000))
@@ -31,7 +33,7 @@
   (.setAttribute video "playsinline" "true"))
 
 (defn set-renderer []
-  (.setSize renderer js/window.innerWidth js/window.innerHeight)
+  (resize)
   (.appendChild js/document.body (.-domElement renderer)))
 
 (defn set-render-type [type]
@@ -74,6 +76,15 @@
     (vr-btn.addEventListener "click" (fn [] (set-render-type effect)
                                        (.play video)) false)))
 
+;;Respond to resize
+(defn resize []
+  (.setSize renderer js/window.innerWidth js/window.innerHeight)
+  (set! (.-aspect camera) (/ js/window.innerWidth js/window.innerHeight))
+  (.updateProjectionMatrix camera))
+
+(defn setsize []
+  (.addEventListener js/window "resize" resize false))
+
 (defn main []
   (.log js/console "360 Video/VR Demo!")
   (set-video)
@@ -85,6 +96,7 @@
   (set-texture-filters)
   (set-mesh-rotation)
   (setup-buttons)
+  (setsize)
   (.add scene mesh)
   (animate))
 
