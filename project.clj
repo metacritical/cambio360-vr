@@ -3,17 +3,18 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-
-  
   
   :min-lein-version "2.7.1"
 
-  :dependencies [[org.clojure/clojure "1.9.0"]
+  :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [org.clojure/core.async  "0.4.474"]
+                 [com.bhauman/figwheel-main "0.1.9"]
                  [cljsjs/three "0.0.91-1"]
                  [cljsjs/three-examples "0.0.91-0"]
-                 [com.bhauman/figwheel-main "0.1.9"]]
+                 [cljsjs/hls "0.11.0-0"]
+                 [reagent "0.8.1"]
+                 [cljsjs/material-ui "3.9.1-0"]]
 
   :plugins [[lein-figwheel "0.5.16"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
@@ -22,6 +23,9 @@
             "build-dev" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]}
 
   :source-paths ["src"]
+
+  :foreign-libs [{:file "m3u8/WebModule.js" :provides ["WebModule"]}
+                 {:file "m3u8/M3U8.js" :provides ["M3U8"] :requires ["WebModule"]}]
 
   :cljsbuild {:builds
               [{:id "dev"
@@ -45,7 +49,9 @@
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
                            :preloads [devtools.preload]
-                           }}
+                           :foreign-libs [{:file "m3u8/WebModule.js" :provides ["WebModule"]}
+                                          {:file "m3u8/M3U8.js" :provides ["M3U8"]
+                                           :requires ["WebModule"]}]}}
                ;; This next build is a compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
@@ -53,7 +59,7 @@
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/cambio_360.js"
                            :main cambio-360.core
-                           :optimizations :advanced
+                           :optimizations :none
                            :pretty-print false}
                 :figwheel {:autoload false}}]}
 
@@ -110,4 +116,7 @@
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
                    ;; need to add the compliled assets to the :clean-targets
                    :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                                     :target-path]}})
+                                                     :target-path]
+                   :foreign-libs [{:file "m3u8/WebModule.js" :provides ["WebModule"]}
+                                          {:file "m3u8/M3U8.js" :provides ["M3U8"]
+                                           :requires ["WebModule"]}]}})
